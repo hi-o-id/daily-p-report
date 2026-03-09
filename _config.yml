@@ -3,12 +3,6 @@ description: 设计和硬件相关的专利，来自 Apple 等公司
 theme: minima
 
 
-baseurl: "/daily-p-report"
-url: "https://hi-o-id.github.io"
-
-twitter_username: 
-github_username: hi-o-id
-
 # 构建设置
 markdown: kramdown
 theme: minima
@@ -35,7 +29,7 @@ defaults:
       type: "posts"
     values:
       layout: post
-      author: "专利监测系统"
+      author: ""
 
 # 排除文件
 exclude:
