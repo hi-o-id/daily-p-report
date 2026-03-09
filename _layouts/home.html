@@ -1,0 +1,44 @@
+---
+layout: default
+---
+<div class="home">
+  {%- if page.title -%}
+    <h1 class="page-heading">{{ page.title }}</h1>
+  {%- endif -%}
+
+  {{ content }}
+
+  {%- assign latest_posts = site.posts | slice: 0, 4 -%}
+  {%- assign older_posts = site.posts | slice: 4, site.posts.size -%}
+
+  {%- if latest_posts.size > 0 -%}
+  <h2>最新</h2>
+  <ul class="post-list">
+    {%- for post in latest_posts -%}
+    <li>
+      {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+      <span class="post-meta">{{ post.date | date: date_format }}</span>
+      <h3>
+        <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+      </h3>
+      <div class="post-content e-content">{{ post.content }}</div>
+    </li>
+    {%- endfor -%}
+  </ul>
+  {%- endif -%}
+
+  {%- if older_posts.size > 0 -%}
+  <h2>更多</h2>
+  <ul class="post-list">
+    {%- for post in older_posts -%}
+    <li>
+      {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+      <span class="post-meta">{{ post.date | date: date_format }}</span>
+      <h3>
+        <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+      </h3>
+    </li>
+    {%- endfor -%}
+  </ul>
+  {%- endif -%}
+</div>
