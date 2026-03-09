@@ -5,11 +5,11 @@ layout: default
 <div class="archive">
   <h1 class="page-heading">
     {% if page.type == 'year' %}
-      📅 {{ page.date | date: "%Y" }} 年归档
+      {{ page.date | date: "%Y" }} 年归档
     {% elsif page.type == 'month' %}
-      📅 {{ page.date | date: "%Y 年 %m 月" }} 归档
+       {{ page.date | date: "%Y 年 %m 月" }} 归档
     {% elsif page.type == 'tag' %}
-      🏷️ 标签：{{ page.title }}
+       标签：{{ page.title }}
     {% endif %}
   </h1>
 
