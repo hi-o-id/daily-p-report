@@ -5,7 +5,7 @@ permalink: /archive/
 ---
 
 <div class="archives-index">
-  <h1 class="page-heading">📚 文章归档</h1>
+  <h1 class="page-heading"> 文章归档</h1>
 
   {% assign posts_by_year = site.posts | group_by_exp: 'post', 'post.date | date: "%Y"' %}
   
@@ -13,7 +13,7 @@ permalink: /archive/
     <section class="archive-year">
       <h2>
         <a href="{{ '/archive/' | append: year.name | relative_url }}">
-          📁 {{ year.name }} 年
+           {{ year.name }} 年
         </a>
         <span class="post-count">({{ year.items | size }} 篇)</span>
       </h2>
@@ -24,7 +24,7 @@ permalink: /archive/
         {% for month in posts_by_month %}
           <li>
             <a href="{{ '/archive/' | append: year.name | append: '/' | append: month.name | relative_url }}">
-              📅 {{ month.name }} 月
+               {{ month.name }} 月
             </a>
             <span class="post-count">({{ month.items | size }} 篇)</span>
           </li>
