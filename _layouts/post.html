@@ -32,8 +32,7 @@ layout: base
     </div>
   </header>
 
-  <div class="post-content e-content" itemprop="articleBody">
-    {%- if page.tags and page.tags.size > 0 -%}
+   {%- if page.tags and page.tags.size > 0 -%}
   <div class="post-tags">
     <strong>Tags:</strong>
     {%- for tag in page.tags -%}
@@ -41,6 +40,8 @@ layout: base
     {%- endfor -%}
   </div>
 {%- endif -%}
+  
+  <div class="post-content e-content" itemprop="articleBody">
     {{ content }}
   </div>
 
