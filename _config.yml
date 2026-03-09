@@ -1,13 +1,5 @@
-title: 专利日报
-email: your-email@example.com
-description: >-
-  每日专利监测报告，自动同步自 Apple Patent Archive
-
-baseurl: "/daily-p-report"
-url: "https://hi-o-id.github.io"
-
-twitter_username: 
-github_username: hi-o-id
+title: 专利小快报
+description: 设计相关专利，来自 Apple 等公司
 
 # 构建设置
 markdown: kramdown
@@ -35,7 +27,7 @@ defaults:
       type: "posts"
     values:
       layout: post
-      author: "专利监测系统"
+      author: ""
 
 # 分页（可选）
 paginate: 10
