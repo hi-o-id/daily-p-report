@@ -8,8 +8,8 @@ layout: default
 
   {{ content }}
 
-  {%- assign latest_posts = site.posts | slice: 0, 4 -%}
-  {%- assign older_posts = site.posts | slice: 4, site.posts.size -%}
+  {%- assign latest_posts = site.posts | slice: 0, 2 -%}
+  {%- assign older_posts = site.posts | slice: 2, site.posts.size -%}
 
   {%- if latest_posts.size > 0 -%}
   <h2>最新</h2>
