@@ -11,6 +11,7 @@ categories: Apple
 
 
 
+
 ### 1. 电子设备的可穿戴面部接口
 
 **Title (EN)**: Facial Interface for Electronic Device  
@@ -45,7 +46,9 @@ categories: Apple
 **[View Full Patent @ WIPO](https://patentscope2.wipo.int/search/en/detail.jsf?docId=US475030694)**  
 **[View Full Patent @ Google Patents](https://patents.google.com/patent/US20260063912)**
 
+
 ---
+
 
 
 
@@ -83,7 +86,9 @@ categories: Apple
 **[View Full Patent @ WIPO](https://patentscope2.wipo.int/search/en/detail.jsf?docId=US473972377)**  
 **[View Full Patent @ Google Patents](https://patents.google.com/patent/US20260050322)**
 
+
 ---
+
 
 
 
@@ -121,7 +126,9 @@ categories: Apple
 **[View Full Patent @ WIPO](https://patentscope2.wipo.int/search/en/detail.jsf?docId=US473972378)**  
 **[View Full Patent @ Google Patents](https://patents.google.com/patent/US20260050323)**
 
+
 ---
+
 
 
 
@@ -159,7 +166,9 @@ categories: Apple
 **[View Full Patent @ WIPO](https://patentscope2.wipo.int/search/en/detail.jsf?docId=US474913043)**  
 **[View Full Patent @ Google Patents](https://patents.google.com/patent/US20260056603)**
 
+
 ---
+
 
 
 
@@ -196,6 +205,7 @@ categories: Apple
 
 **[View Full Patent @ WIPO](https://patentscope2.wipo.int/search/en/detail.jsf?docId=US473972371)**  
 **[View Full Patent @ Google Patents](https://patents.google.com/patent/US20260050316)**
+
 
 ---
 
