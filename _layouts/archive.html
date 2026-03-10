@@ -3,19 +3,7 @@ layout: default
 ---
 
 <div class="archive">
-  <h1 class="page-heading">
-    {% if page.type == 'year' %}
-      📅 {{ page.date | date: "%Y" }} 年归档
-    {% elsif page.type == 'month' %}
-      📅 {{ page.date | date: "%Y 年 %m 月" }} 归档
-    {% elsif page.type == 'category' %}
-      {% if page.title == "Apple" %}
-        🍎 Apple 分类归档
-      {% else %}
-        📂 {{ page.title }} 分类归档
-      {% endif %}
-    {% endif %}
-  </h1>
+
 
   <p class="archive-meta">
     共 {{ page.posts | size }} 篇文章
