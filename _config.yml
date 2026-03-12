@@ -6,7 +6,7 @@ baseurl: "/daily-p-report"
 lang: "zh-CN"
 timezone: "Asia/Shanghai"
 
-google_analytics: "G-9QBC2W58K4"
+google_analytics: G-9QBC2W58K4
 
 # 构建设置
 markdown: kramdown
