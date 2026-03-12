@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: 'en' }}">
+
+  {%- include head.html -%}
+
+  <body>
+
+    {%- include header.html -%}
+
+    {%- assign about_page = site.pages | where: 'url', '/about/' | first -%}
+    {%- if about_page -%}
+      {%- assign about_notice = about_page.content | markdownify | strip_html | normalize_whitespace | truncate: 60 -%}
+      {%- if about_notice != '' -%}
+      <div class="header-notice">
+        <div class="wrapper">
+          <a class="post-meta" href="{{ '/about/' | relative_url }}">{{ about_notice }}</a>
+        </div>
+      </div>
+      {%- endif -%}
+    {%- endif -%}
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        {{ content }}
+      </div>
+    </main>
+
+    {%- include footer.html -%}
+
+  </body>
+
+</html>
