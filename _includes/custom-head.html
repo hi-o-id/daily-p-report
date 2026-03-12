@@ -1,15 +1,14 @@
 {%- comment -%}
   Custom GA4 tracking snippet.
-  Set `google_analytics` in `_config.yml`, e.g. `G-XXXXXXXXXX`.
-  This file is included by minima's default head template.
+  Set `ga_tracking_id` in `_config.yml`, e.g. `G-XXXXXXXXXX`.
 {%- endcomment -%}
 
-{%- if jekyll.environment == 'production' and site.google_analytics -%}
-  <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}"></script>
+{%- if jekyll.environment == 'production' and site.ga_tracking_id -%}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.ga_tracking_id }}"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', '{{ site.google_analytics }}');
+    gtag('config', '{{ site.ga_tracking_id }}');
   </script>
 {%- endif -%}
