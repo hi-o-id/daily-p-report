@@ -17,11 +17,21 @@ html {
   scroll-behavior: smooth;
 }
 
+.quick-toc-shell {
 .quick-toc {
   position: fixed;
   top: 96px;
   right: 24px;
   width: 260px;
+  z-index: 100;
+}
+
+.quick-toc-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
   max-height: calc(100vh - 120px);
   overflow: auto;
   padding: 12px 14px;
@@ -58,6 +68,26 @@ html {
   font-size: 14px;
   color: #666;
   cursor: pointer;
+  background: #e8e8e8;
+}
+
+.quick-toc {
+  max-height: calc(100vh - 156px);
+  overflow: auto;
+  padding: 12px 14px;
+  border: 1px solid #e5e5e5;
+  border-top: 0;
+  border-radius: 0 0 10px 10px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.quick-toc-shell.is-collapsed {
+  width: auto;
+}
+
+.quick-toc-shell.is-collapsed .quick-toc {
+  display: none;
   position: sticky;
   top: 0;
   z-index: 2;
@@ -121,6 +151,8 @@ html {
 }
 
 /* 900px baseline for TOC visibility: <=900 hide, >900 show */
+@media (max-width: 900px) {
+  .quick-toc-shell {
 
 /* 900px baseline for TOC visibility: <=900 hide, >900 show */
 

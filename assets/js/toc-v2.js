@@ -61,6 +61,24 @@
 
     if (!headings.length) return;
 
+    var existingShell = document.querySelector('.quick-toc-shell');
+    if (existingShell && existingShell.parentNode) existingShell.parentNode.removeChild(existingShell);
+    var existing = document.querySelector('.quick-toc');
+    if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+
+    var shell = document.createElement('div');
+    shell.className = 'quick-toc-shell';
+
+    var title = document.createElement('button');
+    title.type = 'button';
+    title.className = 'quick-toc-tab';
+    title.textContent = '专利条目';
+    title.setAttribute('aria-expanded', 'true');
+    shell.appendChild(title);
+
+    var toc = document.createElement('aside');
+    toc.className = 'quick-toc';
+    toc.setAttribute('aria-label', '页面目录');
     var existing = document.querySelector('.quick-toc');
     if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
 
@@ -93,6 +111,11 @@
     });
 
     toc.appendChild(list);
+    shell.appendChild(toc);
+    document.body.appendChild(shell);
+
+    title.addEventListener('click', function () {
+      var isCollapsed = shell.classList.toggle('is-collapsed');
     document.body.appendChild(toc);
 
     title.addEventListener('click', function () {
