@@ -47,6 +47,11 @@ html {
   z-index: 2;
   padding-bottom: 6px;
   background: #e8e8e8;
+  background: transparent;
+  text-align: left;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
 }
 
 .quick-toc.is-collapsed {
@@ -59,6 +64,9 @@ html {
 
 .quick-toc.is-collapsed .quick-toc__list {
   display: none;
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: #666;
 }
 
 .quick-toc__list {
@@ -96,6 +104,23 @@ html {
 }
 
 @media (max-width: 900px) {
+  .quick-toc {
+    right: 8px;
+    width: 220px;
+    max-width: calc(100vw - 16px);
+    top: 72px;
+    max-height: calc(100vh - 84px);
+    width: min(220px, calc(100vw - 16px));
+    top: 72px;
+    max-height: calc(100vh - 84px);
+    }
+}
+    
+.quick-toc {
+  display: block;
+}
+
+@media (max-width: 1250px) {
   .quick-toc {
     display: none;
   }

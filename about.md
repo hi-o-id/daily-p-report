@@ -4,7 +4,7 @@ title: 关于
 permalink: /about/
 ---
 
-本网站自动更新，第一时间[^1] [^2]获取 USPTO 的新公开专利，申请人限定于 Apple 和其他公司（目前为 Google, Meta, Microsoft, Amazon）。
+本网站自动更新，第一时间[^1];[^2]获取 USPTO 的新公开专利，申请人限定于 Apple 和其他公司（目前为 Google, Meta, Microsoft, Amazon）。
 
 这些新公布专利经过 LLM 筛选、翻译和整理[^3]，自动发布至此网站。
 
