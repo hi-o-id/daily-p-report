@@ -107,6 +107,9 @@ html {
   background: rgba(42, 122, 226, 0.08);
 }
 
+/* 900px baseline for TOC visibility: <=900 hide, >900 show */
+@media (max-width: 900px) {
+  .quick-toc {
 @media (max-width: 900px) {
   .quick-toc {
     right: 8px;
