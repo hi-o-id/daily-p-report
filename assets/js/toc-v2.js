@@ -79,6 +79,19 @@
     var toc = document.createElement('aside');
     toc.className = 'quick-toc';
     toc.setAttribute('aria-label', '页面目录');
+    var existing = document.querySelector('.quick-toc');
+    if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+
+    var toc = document.createElement('aside');
+    toc.className = 'quick-toc';
+    toc.setAttribute('aria-label', '页面目录');
+
+    var title = document.createElement('button');
+    title.type = 'button';
+    title.className = 'quick-toc__title';
+    title.textContent = '专利条目';
+    title.setAttribute('aria-expanded', 'true');
+    toc.appendChild(title);
 
     var list = document.createElement('ol');
     list.className = 'quick-toc__list';
@@ -103,6 +116,10 @@
 
     title.addEventListener('click', function () {
       var isCollapsed = shell.classList.toggle('is-collapsed');
+    document.body.appendChild(toc);
+
+    title.addEventListener('click', function () {
+      var isCollapsed = toc.classList.toggle('is-collapsed');
       title.setAttribute('aria-expanded', String(!isCollapsed));
     });
 
