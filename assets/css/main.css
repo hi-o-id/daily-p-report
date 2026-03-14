@@ -7,7 +7,7 @@
   "minima/initialize";
 
 .footnotes {
-    color: var(--fgColor-muted, var(--color-fg-muted));
-    border-top: 1px solid var(--borderColor-default, var(--color-border-default));
+    color: #828282;
+    border-top: 1px solid #828282;
     font-size: 12px;
 }
