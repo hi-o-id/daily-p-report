@@ -12,3 +12,91 @@
     margin-top: 15px;
     margin-left: 15px;
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+.quick-toc {
+  position: fixed;
+  top: 96px;
+  right: 24px;
+  width: 260px;
+  max-height: calc(100vh - 120px);
+  overflow: auto;
+  padding: 12px 14px;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  z-index: 100;
+}
+
+.quick-toc__title {
+  display: block;
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+}
+
+.quick-toc.is-collapsed {
+  width: auto;
+}
+
+.quick-toc.is-collapsed .quick-toc__title {
+  margin-bottom: 0;
+}
+
+.quick-toc.is-collapsed .quick-toc__list {
+  display: none;
+}
+
+.quick-toc__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quick-toc__item {
+  margin: 0;
+}
+
+.quick-toc__item.is-sub {
+  padding-left: 10px;
+}
+
+.quick-toc__link {
+  display: block;
+  padding: 5px 6px;
+  color: #666;
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.quick-toc__link:hover {
+  color: #111;
+}
+
+.quick-toc__link.is-active {
+  color: #111;
+  border-left-color: #2a7ae2;
+  background: rgba(42, 122, 226, 0.08);
+}
+
+@media (max-width: 900px) {
+  .quick-toc {
+    right: 8px;
+    width: 220px;
+    max-width: calc(100vw - 16px);
+    top: 72px;
+    max-height: calc(100vh - 84px);
+  }
+}
