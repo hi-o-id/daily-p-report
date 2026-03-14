@@ -55,6 +55,9 @@ html {
 
 .quick-toc.is-collapsed .quick-toc__list {
   display: none;
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: #666;
 }
 
 .quick-toc__list {
@@ -98,5 +101,18 @@ html {
     max-width: calc(100vw - 16px);
     top: 72px;
     max-height: calc(100vh - 84px);
+    width: min(220px, calc(100vw - 16px));
+    top: 72px;
+    max-height: calc(100vh - 84px);
+    }
+}
+    
+.quick-toc {
+  display: block;
+}
+
+@media (max-width: 1250px) {
+  .quick-toc {
+    display: none;
   }
 }
