@@ -34,6 +34,10 @@ html {
 
 .quick-toc__title {
   display: block;
+  width: calc(100% + 28px);
+  margin: -12px -14px 8px;
+  padding: 8px 14px 6px;
+  box-sizing: border-box;
   width: 100%;
   margin: 0 0 8px;
   padding: 0;
