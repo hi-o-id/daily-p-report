@@ -107,27 +107,14 @@ html {
   background: rgba(42, 122, 226, 0.08);
 }
 
+
 /* 900px baseline for TOC visibility: <=900 hide, >900 show */
-@media (max-width: 900px) {
-  .quick-toc {
-@media (max-width: 900px) {
-  .quick-toc {
-    right: 8px;
-    width: 220px;
-    max-width: calc(100vw - 16px);
-    top: 72px;
-    max-height: calc(100vh - 84px);
-    width: min(220px, calc(100vw - 16px));
-    top: 72px;
-    max-height: calc(100vh - 84px);
-    }
-}
-    
+
 .quick-toc {
   display: block;
 }
 
-@media (max-width: 1250px) {
+@media (max-width: 900px) {
   .quick-toc {
     display: none;
   }
