@@ -33,6 +33,18 @@ html {
 }
 
 .quick-toc__title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% + 28px);
+  margin: -12px -14px 8px;
+  min-height: 36px;
+  padding: 8px 14px 6px;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 10px 10px 0 0;
+  appearance: none;
+  -webkit-appearance: none;
   display: block;
   width: calc(100% + 28px);
   margin: -12px -14px 8px;
@@ -50,6 +62,7 @@ html {
   top: 0;
   z-index: 2;
   padding-bottom: 6px;
+  background: #e8e8e8 !important;
   background: #e8e8e8;
   background: transparent;
   text-align: left;
@@ -107,6 +120,7 @@ html {
   background: rgba(42, 122, 226, 0.08);
 }
 
+/* 900px baseline for TOC visibility: <=900 hide, >900 show */
 
 /* 900px baseline for TOC visibility: <=900 hide, >900 show */
 
