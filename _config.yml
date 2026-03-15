@@ -8,6 +8,9 @@ timezone: "Asia/Shanghai"
 
 google_analytics: "G-9QBC2W58K4"
 
+# 静态资源缓存版本号（可选）。留空可关闭 ?v= 参数。
+asset_version: "20260314-10"
+
 # 构建设置
 markdown: kramdown
 theme: minima
