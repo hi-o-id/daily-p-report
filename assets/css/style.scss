@@ -62,6 +62,7 @@ html {
 }
 
 .quick-toc-shell.is-collapsed {
+  display: flex;
   width: 260px;
 }
 
@@ -105,7 +106,7 @@ html {
 
 /* 900px baseline for TOC visibility: <=900 hide, >900 show */
 @media (max-width: 900px) {
-  .quick-toc-shell {
+  .quick-toc-shell.is-collapsed {
     display: none;
   }
 }
