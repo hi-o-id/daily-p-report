@@ -113,11 +113,37 @@
     });
 
     var links = toArray(toc.querySelectorAll('.quick-toc__link'));
+    var linkById = {};
+
+    links.forEach(function (link) {
+      linkById[link.getAttribute('data-target-id')] = link;
+    });
+
+    function scrollActiveLinkIntoView(activeLink) {
+      if (!activeLink) return;
+      if (shell.classList.contains('is-collapsed')) return;
+
+      var linkTop = activeLink.offsetTop;
+      var linkBottom = linkTop + activeLink.offsetHeight;
+      var viewTop = toc.scrollTop;
+      var viewBottom = viewTop + toc.clientHeight;
+
+      if (linkTop < viewTop) {
+        toc.scrollTo({ top: linkTop - 8, behavior: 'smooth' });
+        return;
+      }
+
+      if (linkBottom > viewBottom) {
+        toc.scrollTo({ top: linkBottom - toc.clientHeight + 8, behavior: 'smooth' });
+      }
+    }
 
     function setActive(id) {
       links.forEach(function (link) {
         link.classList.toggle('is-active', link.getAttribute('data-target-id') === id);
       });
+
+      scrollActiveLinkIntoView(linkById[id]);
     }
 
     if ('IntersectionObserver' in window) {
