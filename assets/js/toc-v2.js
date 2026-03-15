@@ -67,6 +67,11 @@
       existingShell.parentNode.removeChild(existingShell);
     }
 
+    var existing = document.querySelector('.quick-toc');
+    if (existing && existing.parentNode) {
+      existing.parentNode.removeChild(existing);
+    }
+
     var shell = document.createElement('div');
     shell.className = 'quick-toc-shell';
 
@@ -104,7 +109,7 @@
 
     tab.addEventListener('click', function () {
       var isCollapsed = shell.classList.toggle('is-collapsed');
-      tab.setAttribute('aria-expanded', String(!isCollapsed));
+      title.setAttribute('aria-expanded', String(!isCollapsed));
     });
 
     var links = toArray(toc.querySelectorAll('.quick-toc__link'));
@@ -113,36 +118,6 @@
     links.forEach(function (link) {
       linkById[link.getAttribute('data-target-id')] = link;
     });
-
-
-    var headingIndexById = {};
-    var lastScrollY = window.scrollY || window.pageYOffset || 0;
-    var ACTIVATE_AHEAD_COUNT = 2;
-    var manualActiveId = null;
-    var manualActiveUntil = 0;
-    var manualActiveLockMs = 1200;
-
-    headings.forEach(function (heading, index) {
-      headingIndexById[heading.id] = index;
-    });
-
-    function pickBiasedActiveId(baseId) {
-      var baseIndex = headingIndexById[baseId];
-      if (typeof baseIndex !== 'number') return baseId;
-
-      var currentScrollY = window.scrollY || window.pageYOffset || 0;
-      var scrollingDown = currentScrollY >= lastScrollY;
-      lastScrollY = currentScrollY;
-
-      var targetIndex = scrollingDown
-        ? baseIndex + ACTIVATE_AHEAD_COUNT
-        : baseIndex - ACTIVATE_AHEAD_COUNT;
-
-      if (targetIndex < 0) targetIndex = 0;
-      if (targetIndex >= headings.length) targetIndex = headings.length - 1;
-
-      return headings[targetIndex].id;
-    }
 
     function scrollActiveLinkIntoView(activeLink) {
       if (!activeLink) return;
@@ -178,7 +153,7 @@
         if (!targetId) return;
 
         manualActiveId = targetId;
-        manualActiveUntil = Date.now() + manualActiveLockMs;
+        manualActiveUntil = Date.now() + MANUAL_ACTIVE_LOCK_MS;
         setActive(targetId);
       });
     });
@@ -190,16 +165,7 @@
           .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
 
         if (visible.length > 0) {
-          if (manualActiveId && Date.now() < manualActiveUntil) {
-            setActive(manualActiveId);
-            return;
-          }
-
-          if (manualActiveId && Date.now() >= manualActiveUntil) {
-            manualActiveId = null;
-          }
-
-          setActive(pickBiasedActiveId(visible[0].target.id));
+          setActive(visible[0].target.id);
         }
       }, {
         rootMargin: '-20% 0px -65% 0px',
