@@ -67,6 +67,11 @@
       existingShell.parentNode.removeChild(existingShell);
     }
 
+    var existing = document.querySelector('.quick-toc');
+    if (existing && existing.parentNode) {
+      existing.parentNode.removeChild(existing);
+    }
+
     var shell = document.createElement('div');
     shell.className = 'quick-toc-shell';
 
@@ -104,7 +109,7 @@
 
     tab.addEventListener('click', function () {
       var isCollapsed = shell.classList.toggle('is-collapsed');
-      tab.setAttribute('aria-expanded', String(!isCollapsed));
+      title.setAttribute('aria-expanded', String(!isCollapsed));
     });
 
     var links = toArray(toc.querySelectorAll('.quick-toc__link'));
