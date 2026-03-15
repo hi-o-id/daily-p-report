@@ -127,18 +127,26 @@
       if (!activeLink) return;
       if (shell.classList.contains('is-collapsed')) return;
 
-      var linkTop = activeLink.offsetTop;
-      var linkBottom = linkTop + activeLink.offsetHeight;
-      var viewTop = toc.scrollTop;
-      var viewBottom = viewTop + toc.clientHeight;
+      // Use getBoundingClientRect for reliable position relative to the toc viewport
+      var tocRect = toc.getBoundingClientRect();
+      var linkRect = activeLink.getBoundingClientRect();
 
-      if (linkTop < viewTop) {
-        toc.scrollTo({ top: linkTop - 8, behavior: 'smooth' });
+      // How far the link sits from the top of the toc's scroll content
+      var linkScrollTop = linkRect.top - tocRect.top + toc.scrollTop;
+      var linkScrollBottom = linkScrollTop + linkRect.height;
+
+      // One link-height worth of padding so the neighbour is always visible
+      var pad = linkRect.height + 4;
+
+      // Link is above the visible area → scroll up, leaving room to see the item above
+      if (linkRect.top < tocRect.top) {
+        toc.scrollTo({ top: Math.max(0, linkScrollTop - pad), behavior: 'smooth' });
         return;
       }
 
-      if (linkBottom > viewBottom) {
-        toc.scrollTo({ top: linkBottom - toc.clientHeight + 8, behavior: 'smooth' });
+      // Link is below the visible area → scroll down, leaving room to see the item below
+      if (linkRect.bottom > tocRect.bottom) {
+        toc.scrollTo({ top: linkScrollBottom - toc.clientHeight + pad, behavior: 'smooth' });
       }
     }
 
