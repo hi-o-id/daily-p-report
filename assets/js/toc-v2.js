@@ -2,10 +2,11 @@
   function slugify(text) {
     return String(text || '')
       .toLowerCase()
-      .replace(/^\s+|\s+$/g, '')
+      .trim()
       .replace(/[\s\u00A0]+/g, '-')
       .replace(/[^\w\-\u4e00-\u9fa5]/g, '')
-      .replace(/\-+/g, '-');
+      .replace(/\-+/g, '-')
+      .replace(/^-+|-+$/g, '');
   }
 
   function toArray(nodeList) {
@@ -37,9 +38,9 @@
     var headings = [];
 
     scopes.forEach(function (scope, scopeIndex) {
-      toArray(scope.querySelectorAll('h2, h3')).forEach(function (heading) {
+      toArray(scope.querySelectorAll('h2, h3')).forEach(function (heading, headingIndex) {
         var id = heading.id || slugify(heading.textContent || 'section');
-        if (!id) id = 'section-' + (scopeIndex + 1);
+        if (!id) id = 'section-' + (scopeIndex + 1) + '-' + (headingIndex + 1);
 
         var baseId = id;
         var n = 2;
@@ -53,7 +54,7 @@
 
         headings.push({
           id: id,
-          text: (heading.textContent || '').replace(/^\s+|\s+$/g, ''),
+          text: (heading.textContent || '').trim(),
           level: (heading.tagName || '').toLowerCase()
         });
       });
@@ -62,36 +63,23 @@
     if (!headings.length) return;
 
     var existingShell = document.querySelector('.quick-toc-shell');
-    if (existingShell && existingShell.parentNode) existingShell.parentNode.removeChild(existingShell);
-    var existing = document.querySelector('.quick-toc');
-    if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+    if (existingShell && existingShell.parentNode) {
+      existingShell.parentNode.removeChild(existingShell);
+    }
 
     var shell = document.createElement('div');
     shell.className = 'quick-toc-shell';
 
-    var title = document.createElement('button');
-    title.type = 'button';
-    title.className = 'quick-toc-tab';
-    title.textContent = '专利条目';
-    title.setAttribute('aria-expanded', 'true');
-    shell.appendChild(title);
+    var tab = document.createElement('button');
+    tab.type = 'button';
+    tab.className = 'quick-toc-tab';
+    tab.textContent = '专利条目';
+    tab.setAttribute('aria-expanded', 'true');
+    shell.appendChild(tab);
 
     var toc = document.createElement('aside');
     toc.className = 'quick-toc';
     toc.setAttribute('aria-label', '页面目录');
-    var existing = document.querySelector('.quick-toc');
-    if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
-
-    var toc = document.createElement('aside');
-    toc.className = 'quick-toc';
-    toc.setAttribute('aria-label', '页面目录');
-
-    var title = document.createElement('button');
-    title.type = 'button';
-    title.className = 'quick-toc__title';
-    title.textContent = '专利条目';
-    title.setAttribute('aria-expanded', 'true');
-    toc.appendChild(title);
 
     var list = document.createElement('ol');
     list.className = 'quick-toc__list';
@@ -114,22 +102,114 @@
     shell.appendChild(toc);
     document.body.appendChild(shell);
 
-    title.addEventListener('click', function () {
+    tab.addEventListener('click', function () {
       var isCollapsed = shell.classList.toggle('is-collapsed');
-    document.body.appendChild(toc);
-
-    title.addEventListener('click', function () {
-      var isCollapsed = toc.classList.toggle('is-collapsed');
-      title.setAttribute('aria-expanded', String(!isCollapsed));
+      tab.setAttribute('aria-expanded', String(!isCollapsed));
     });
 
     var links = toArray(toc.querySelectorAll('.quick-toc__link'));
+    var linkById = {};
 
-    function setActive(id) {
+    links.forEach(function (link) {
+      linkById[link.getAttribute('data-target-id')] = link;
+    });
+
+
+    var headingIndexById = {};
+    var lastScrollY = window.scrollY || window.pageYOffset || 0;
+    var ACTIVATE_AHEAD_COUNT = 2;
+    var manualActiveId = null;
+    var manualActiveUntil = 0;
+    var manualActiveLockMs = 1200;
+
+    headings.forEach(function (heading, index) {
+      headingIndexById[heading.id] = index;
+    });
+
+    function pickBiasedActiveId(baseId) {
+      var baseIndex = headingIndexById[baseId];
+      if (typeof baseIndex !== 'number') return baseId;
+
+      var currentScrollY = window.scrollY || window.pageYOffset || 0;
+      var scrollingDown = currentScrollY >= lastScrollY;
+      lastScrollY = currentScrollY;
+
+      var targetIndex = scrollingDown
+        ? baseIndex + ACTIVATE_AHEAD_COUNT
+        : baseIndex - ACTIVATE_AHEAD_COUNT;
+
+      if (targetIndex < 0) targetIndex = 0;
+      if (targetIndex >= headings.length) targetIndex = headings.length - 1;
+
+      return headings[targetIndex].id;
+    }
+
+
+    function isHeadingInActiveZone(headingId) {
+      var el = document.getElementById(headingId);
+      if (!el) return false;
+
+      var rect = el.getBoundingClientRect();
+      var zoneTop = window.innerHeight * 0.2;
+      var zoneBottom = window.innerHeight * 0.8;
+      return rect.top <= zoneBottom && rect.bottom >= zoneTop;
+    }
+
+    function scrollActiveLinkIntoView(activeLink) {
+      if (!activeLink) return;
+      if (shell.classList.contains('is-collapsed')) return;
+
+      var linkTop = activeLink.offsetTop;
+      var linkBottom = linkTop + activeLink.offsetHeight;
+      var viewTop = toc.scrollTop;
+      var viewBottom = viewTop + toc.clientHeight;
+
+      if (linkTop < viewTop) {
+        toc.scrollTo({ top: linkTop - 8, behavior: 'smooth' });
+        return;
+      }
+
+      if (linkBottom > viewBottom) {
+        toc.scrollTo({ top: linkBottom - toc.clientHeight + 8, behavior: 'smooth' });
+      }
+    }
+
+    var currentHashId = (window.location.hash || '').replace(/^#/, '');
+
+    function syncAddressHash(id) {
+      if (!id || id === currentHashId) return;
+      currentHashId = id;
+
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', '#' + id);
+      } else {
+        window.location.hash = id;
+      }
+    }
+
+    function setActive(id, shouldSyncHash) {
       links.forEach(function (link) {
         link.classList.toggle('is-active', link.getAttribute('data-target-id') === id);
       });
+
+      scrollActiveLinkIntoView(linkById[id]);
+
+      if (shouldSyncHash) {
+        syncAddressHash(id);
+      }
     }
+
+
+    links.forEach(function (link) {
+      link.addEventListener('click', function () {
+        var targetId = link.getAttribute('data-target-id');
+        if (!targetId) return;
+
+        manualActiveId = targetId;
+        manualActiveUntil = Date.now() + manualActiveLockMs;
+        setActive(targetId, true);
+      });
+    });
 
     if ('IntersectionObserver' in window) {
       var observer = new IntersectionObserver(function (entries) {
@@ -138,8 +218,16 @@
           .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
 
         if (visible.length > 0) {
-          var currentId = visible[0].target.id;
-          setActive(currentId);
+          if (manualActiveId) {
+            setActive(manualActiveId, true);
+
+            if (Date.now() >= manualActiveUntil && isHeadingInActiveZone(manualActiveId)) {
+              manualActiveId = null;
+            }
+            return;
+          }
+
+          setActive(pickBiasedActiveId(visible[0].target.id), true);
         }
       }, {
         rootMargin: '-20% 0px -65% 0px',
@@ -152,7 +240,7 @@
       });
     }
 
-    if (headings[0]) setActive(headings[0].id);
+    if (headings[0]) setActive(headings[0].id, false);
   }
 
   if (document.readyState === 'loading') {
