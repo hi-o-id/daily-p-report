@@ -146,6 +146,18 @@
       scrollActiveLinkIntoView(linkById[id]);
     }
 
+
+    links.forEach(function (link) {
+      link.addEventListener('click', function () {
+        var targetId = link.getAttribute('data-target-id');
+        if (!targetId) return;
+
+        manualActiveId = targetId;
+        manualActiveUntil = Date.now() + MANUAL_ACTIVE_LOCK_MS;
+        setActive(targetId);
+      });
+    });
+
     if ('IntersectionObserver' in window) {
       var observer = new IntersectionObserver(function (entries) {
         var visible = entries
