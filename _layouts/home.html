@@ -15,10 +15,7 @@ layout: default
       {%- assign digest_count = 0 -%}
       <ul class="post-list">
       {%- for post in site.posts -%}
-        {%- assign is_digest_post = false -%}
-        {%- if post.categories contains '手选' or post.categories contains 'digest' -%}
-          {%- assign is_digest_post = true -%}
-        {%- endif -%}
+        {%- assign is_digest_post = post.categories contains '手选' or post.categories contains 'digest' -%}
         {%- if is_digest_post and digest_count < 10 -%}
           {%- assign digest_count = digest_count | plus: 1 -%}
           <li>
@@ -40,10 +37,7 @@ layout: default
       {%- assign weekly_count = 0 -%}
       <ul class="post-list">
       {%- for post in site.posts -%}
-        {%- assign is_digest_post = false -%}
-        {%- if post.categories contains '手选' or post.categories contains 'digest' -%}
-          {%- assign is_digest_post = true -%}
-        {%- endif -%}
+        {%- assign is_digest_post = post.categories contains '手选' or post.categories contains 'digest' -%}
         {%- unless is_digest_post -%}
           {%- assign weekly_count = weekly_count | plus: 1 -%}
           <li>
