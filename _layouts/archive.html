@@ -1,0 +1,32 @@
+---
+layout: default
+---
+<div class="archive">
+  {%- if page.title -%}
+    <h1 class="page-heading">{{ page.title }}</h1>
+  {%- endif -%}
+
+  {%- if page.type == 'year' -%}
+    <p>{{ page.date | date: '%Y' }} 年归档</p>
+  {%- elsif page.type == 'month' -%}
+    <p>{{ page.date | date: '%Y 年 %-m 月' }}归档</p>
+  {%- elsif page.type == 'category' -%}
+    <p>分类：{{ page.title }}</p>
+  {%- endif -%}
+
+  <ul class="post-list">
+    {%- for post in page.posts -%}
+      <li>
+        {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+        <span class="post-meta">{{ post.date | date: date_format }}</span>
+        <h3>
+          <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+        </h3>
+      </li>
+    {%- endfor -%}
+  </ul>
+
+  {%- if page.posts == empty -%}
+    <p>暂无归档内容。</p>
+  {%- endif -%}
+</div>
