@@ -8,37 +8,52 @@ layout: default
 
   {{ content }}
 
-  {%- assign latest_posts = site.posts | slice: 0, 2 -%}
-  {%- assign older_posts = site.posts | slice: 2, site.posts.size -%}
+  {%- assign home_mode = page.home_mode | default: 'weekly' -%}
+  {%- include home-switcher.html active=home_mode -%}
 
-  {%- if latest_posts.size > 0 -%}
-  <h2>最新</h2>
-  <ul class="post-list">
-    {%- for post in latest_posts -%}
-    <li>
-      {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
-      <span class="post-meta">{{ post.date | date: date_format }}</span>
-      <h3>
-        <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
-      </h3>
-      <div class="post-content e-content">{{ post.content }}</div>
-    </li>
-    {%- endfor -%}
-  </ul>
-  {%- endif -%}
+  {%- if home_mode == 'digest' -%}
+    {%- assign digest_count = 0 -%}
+    <ul class="post-list">
+      {%- for post in site.posts -%}
+        {%- if post.categories contains '手选' and digest_count < 10 -%}
+          {%- assign digest_count = digest_count | plus: 1 -%}
+          <li>
+            {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+            <span class="post-meta">{{ post.date | date: date_format }}</span>
+            <h3>
+              <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+            </h3>
+            <div class="post-content e-content">{{ post.content }}</div>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
 
-  {%- if older_posts.size > 0 -%}
-  <h2>更多</h2>
-  <ul class="post-list">
-    {%- for post in older_posts -%}
-    <li>
-      {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
-      <span class="post-meta">{{ post.date | date: date_format }}</span>
-      <h3>
-        <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
-      </h3>
-    </li>
-    {%- endfor -%}
-  </ul>
+    {%- if digest_count == 0 -%}
+      <p>暂无手选内容。</p>
+    {%- endif -%}
+  {%- else -%}
+    {%- assign weekly_count = 0 -%}
+    <ul class="post-list">
+      {%- for post in site.posts -%}
+        {%- unless post.categories contains '手选' -%}
+          {%- assign weekly_count = weekly_count | plus: 1 -%}
+          <li>
+            {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+            <span class="post-meta">{{ post.date | date: date_format }}</span>
+            <h3>
+              <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+            </h3>
+            {%- if weekly_count <= 2 -%}
+              <div class="post-content e-content">{{ post.content }}</div>
+            {%- endif -%}
+          </li>
+        {%- endunless -%}
+      {%- endfor -%}
+    </ul>
+
+    {%- if weekly_count == 0 -%}
+      <p>暂无快报内容。</p>
+    {%- endif -%}
   {%- endif -%}
 </div>

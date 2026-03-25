@@ -112,3 +112,31 @@ html {
     display: none !important;
   }
 }
+
+.home-switcher {
+  display: flex;
+  gap: 10px;
+  margin: 16px 0 18px;
+}
+
+.home-switcher__button {
+  display: inline-block;
+  padding: 8px 14px;
+  border: 1px solid #d5d5d5;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  color: #444;
+  background: #fff;
+}
+
+.home-switcher__button:hover {
+  border-color: #2a7ae2;
+  color: #2a7ae2;
+}
+
+.home-switcher__button.is-active {
+  border-color: #2a7ae2;
+  background: #2a7ae2;
+  color: #fff;
+}
