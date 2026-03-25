@@ -12,17 +12,11 @@ layout: default
   {%- include home-switcher.html active=home_mode -%}
 
   {%- if home_mode == 'digest' -%}
-    {%- assign digest_count = 0 -%}
-    <ul class="post-list">
+      {%- assign digest_count = 0 -%}
+      <ul class="post-list">
       {%- for post in site.posts -%}
-        {%- assign digest_match_count = 0 -%}
-        {%- for category in post.categories -%}
-          {%- if category == 'digest' -%}
-            {%- assign digest_match_count = digest_match_count | plus: 1 -%}
-            {%- break -%}
-          {%- endif -%}
-        {%- endfor -%}
-        {%- if digest_match_count > 0 and digest_count < 10 -%}
+        {%- assign is_digest_post = post.categories contains '手选' or post.categories contains 'digest' -%}
+        {%- if is_digest_post and digest_count < 10 -%}
           {%- assign digest_count = digest_count | plus: 1 -%}
           <li>
             {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
@@ -40,17 +34,11 @@ layout: default
       <p>暂无 digest 内容。</p>
     {%- endif -%}
   {%- else -%}
-    {%- assign weekly_count = 0 -%}
-    <ul class="post-list">
+      {%- assign weekly_count = 0 -%}
+      <ul class="post-list">
       {%- for post in site.posts -%}
-        {%- assign digest_match_count = 0 -%}
-        {%- for category in post.categories -%}
-          {%- if category == 'digest' -%}
-            {%- assign digest_match_count = digest_match_count | plus: 1 -%}
-            {%- break -%}
-          {%- endif -%}
-        {%- endfor -%}
-        {%- if digest_match_count == 0 -%}
+        {%- assign is_digest_post = post.categories contains '手选' or post.categories contains 'digest' -%}
+        {%- unless is_digest_post -%}
           {%- assign weekly_count = weekly_count | plus: 1 -%}
           <li>
             {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
