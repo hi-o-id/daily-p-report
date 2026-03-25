@@ -1,0 +1,141 @@
+name: Publish Digest Reports to Jekyll
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - "digest_report/**/*"
+  workflow_dispatch:
+
+jobs:
+  publish-digest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Patent Archive Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect Changes
+        id: changed
+        shell: bash
+        run: |
+          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep '^digest_report/' || true)
+          MD_FILES=$(echo "$CHANGED_FILES" | grep '\.md$' || true)
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "md_files<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$MD_FILES" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout Jekyll Blog Repo
+        if: steps.changed.outputs.has_changes == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: hi-o-id/p
+          token: ${{ secrets.JEKYLL_REPO_TOKEN }}
+          path: jekyll-blog
+
+      - name: Process Digest Reports
+        if: steps.changed.outputs.has_changes == 'true'
+        shell: bash
+        run: |
+          echo "${{ steps.changed.outputs.md_files }}" | while read -r file; do
+            [ -z "$file" ] && continue
+            if [ ! -f "$file" ]; then
+              echo "File not found: $file"
+              continue
+            fi
+
+            echo "Processing: $file"
+
+            # 提取专利号（从文件名）
+            filename=$(basename "$file" .md)
+            if [[ $filename =~ ^([A-Z]{2}[0-9]+[A-Z]?[0-9]?)_([0-9]{8})$ ]]; then
+              patent_id="${BASH_REMATCH[1]}"
+              date_part="${BASH_REMATCH[2]}"
+              year=${date_part:0:4}
+              month=${date_part:4:2}
+              day=${date_part:6:2}
+              post_date="${year}-${month}-${day}"
+            else
+              patent_id="$filename"
+              post_date=$(date +%Y-%m-%d)
+              year=${post_date:0:4}
+              month=${post_date:5:2}
+            fi
+
+            img_subdir="${year}-${month}"
+
+            # 从 Markdown 提取 title_cn（## 标题）
+            title_cn=$(grep -m1 '^## ' "$file" | sed 's/^## //' | tr -d '\r')
+            [ -z "$title_cn" ] && title_cn="专利分析: $patent_id"
+
+            echo " -> Patent: $patent_id, Title: $title_cn"
+
+            new_filename="${post_date}-${patent_id}.md"
+            post_subdir="${year}-${month}"
+
+            # 读取内容，从第一个 ## 标题的下一行开始（跳过中文标题）
+            content=$(sed -n '/^## /,$p' "$file" | tail -n +2)
+
+            # 将 ### 替换为 ####（小标题改为 h4）
+            content=$(echo "$content" | sed 's/^### /#### /g')
+
+            # 替换图片路径
+            content=$(echo "$content" | sed "s|images/[0-9]\{4\}-[0-9]\{2\}/|{{ site.baseurl }}/assets/images_digest/${img_subdir}/|g")
+
+            mkdir -p "jekyll-blog/_posts/${post_subdir}"
+
+            # 创建 Jekyll 文章（不包含 patent_id）
+            {
+              printf '%s\n' '---'
+              printf '%s\n' 'layout: post'
+              printf 'title: "%s"\n' "$title_cn"
+              printf 'date: %s\n' "$post_date"
+              printf '%s\n' 'categories: digest'
+              printf '%s\n\n' '---'
+              printf '%s\n' "$content"
+            } > "jekyll-blog/_posts/${post_subdir}/${new_filename}"
+
+            echo " -> Created: _posts/${post_subdir}/${new_filename}"
+
+            dir=$(dirname "$file")
+            src_img_dir="${dir}/images/${img_subdir}"
+
+            if [ -d "$src_img_dir" ]; then
+              mkdir -p "jekyll-blog/assets/images_digest/${img_subdir}"
+
+              for img in "$src_img_dir"/${patent_id}*.{png,jpg,jpeg,webp,gif}; do
+                [ -f "$img" ] && cp "$img" "jekyll-blog/assets/images_digest/${img_subdir}/"
+              done
+
+              echo " -> Synced images to: assets/images_digest/${img_subdir}/"
+            fi
+          done
+
+      - name: Commit and Push
+        if: steps.changed.outputs.has_changes == 'true'
+        working-directory: jekyll-blog
+        shell: bash
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+          git add _posts/ assets/images_digest/ || true
+
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            echo "Changes to be committed:"
+            git diff --cached --name-only
+
+            git commit -m "📄 Auto-publish digest: $(date +%Y-%m-%d) [skip ci]"
+            git push
+            echo "✅ Published successfully"
+          fi
