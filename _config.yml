@@ -39,10 +39,6 @@ defaults:
       layout: post
       author: ""
 
-# 分页（可选）
-paginate: 10
-paginate_path: "/page:num/"
-
 # 排除文件
 exclude:
   - .sass-cache/
