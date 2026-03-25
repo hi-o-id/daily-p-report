@@ -15,7 +15,14 @@ layout: default
     {%- assign digest_count = 0 -%}
     <ul class="post-list">
       {%- for post in site.posts -%}
-        {%- if post.categories contains '手选' and digest_count < 10 -%}
+        {%- assign digest_match_count = 0 -%}
+        {%- for category in post.categories -%}
+          {%- if category == 'digest' -%}
+            {%- assign digest_match_count = digest_match_count | plus: 1 -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if digest_match_count > 0 and digest_count < 10 -%}
           {%- assign digest_count = digest_count | plus: 1 -%}
           <li>
             {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
@@ -30,13 +37,20 @@ layout: default
     </ul>
 
     {%- if digest_count == 0 -%}
-      <p>暂无手选内容。</p>
+      <p>暂无 digest 内容。</p>
     {%- endif -%}
   {%- else -%}
     {%- assign weekly_count = 0 -%}
     <ul class="post-list">
       {%- for post in site.posts -%}
-        {%- unless post.categories contains '手选' -%}
+        {%- assign digest_match_count = 0 -%}
+        {%- for category in post.categories -%}
+          {%- if category == 'digest' -%}
+            {%- assign digest_match_count = digest_match_count | plus: 1 -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if digest_match_count == 0 -%}
           {%- assign weekly_count = weekly_count | plus: 1 -%}
           <li>
             {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
@@ -48,7 +62,7 @@ layout: default
               <div class="post-content e-content">{{ post.content }}</div>
             {%- endif -%}
           </li>
-        {%- endunless -%}
+        {%- endif -%}
       {%- endfor -%}
     </ul>
 
