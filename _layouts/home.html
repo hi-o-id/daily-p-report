@@ -12,8 +12,8 @@ layout: default
   {%- include home-switcher.html active=home_mode -%}
 
   {%- if home_mode == 'digest' -%}
-    {%- assign digest_count = 0 -%}
-    <ul class="post-list">
+      {%- assign digest_count = 0 -%}
+      <ul class="post-list">
       {%- for post in site.posts -%}
         {%- assign is_digest_post = post.categories contains '手选' or post.categories contains 'digest' -%}
         {%- if is_digest_post and digest_count < 10 -%}
@@ -34,8 +34,8 @@ layout: default
       <p>暂无手选内容。</p>
     {%- endif -%}
   {%- else -%}
-    {%- assign weekly_count = 0 -%}
-    <ul class="post-list">
+      {%- assign weekly_count = 0 -%}
+      <ul class="post-list">
       {%- for post in site.posts -%}
         {%- assign is_digest_post = post.categories contains '手选' or post.categories contains 'digest' -%}
         {%- unless is_digest_post -%}
