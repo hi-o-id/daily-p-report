@@ -12,21 +12,20 @@ layout: default
   {%- include home-switcher.html active=home_mode -%}
 
   {%- if home_mode == 'digest' -%}
-    {%- assign digest_count = 0 -%}
-    <ul class="post-list">
+      {%- assign digest_count = 0 -%}
+      <ul class="post-list">
       {%- for post in site.posts -%}
-        {%- if post.categories contains 'digest' -%}
-          {%- if digest_count < 10 -%}
-            {%- assign digest_count = digest_count | plus: 1 -%}
-            <li>
-              {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
-              <span class="post-meta">{{ post.date | date: date_format }}</span>
-              <h3>
-                <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
-              </h3>
-              <div class="post-content e-content">{{ post.content }}</div>
-            </li>
-          {%- endif -%}
+        {%- assign is_digest_post = post.categories contains '手选' or post.categories contains 'digest' -%}
+        {%- if is_digest_post and digest_count < 10 -%}
+          {%- assign digest_count = digest_count | plus: 1 -%}
+          <li>
+            {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+            <span class="post-meta">{{ post.date | date: date_format }}</span>
+            <h3>
+              <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+            </h3>
+            <div class="post-content e-content">{{ post.content }}</div>
+          </li>
         {%- endif -%}
       {%- endfor -%}
     </ul>
@@ -35,11 +34,11 @@ layout: default
       <p>暂无 digest 内容。</p>
     {%- endif -%}
   {%- else -%}
-    {%- assign weekly_count = 0 -%}
-    <ul class="post-list">
+      {%- assign weekly_count = 0 -%}
+      <ul class="post-list">
       {%- for post in site.posts -%}
-        {%- if post.categories contains 'digest' -%}
-        {%- else -%}
+        {%- assign is_digest_post = post.categories contains '手选' or post.categories contains 'digest' -%}
+        {%- unless is_digest_post -%}
           {%- assign weekly_count = weekly_count | plus: 1 -%}
           <li>
             {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
