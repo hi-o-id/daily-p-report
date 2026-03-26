@@ -1,4 +1,5 @@
+{%- assign current_mode = page.home_mode | default: 'weekly' -%}
 <div class="home-switcher" aria-label="首页分流导航">
-  <a class="home-switcher__button{% if include.active == 'digest' %} is-active{% endif %}" href="{{ '/digest/' | relative_url }}">手选</a>
-  <a class="home-switcher__button{% if include.active == 'weekly' %} is-active{% endif %}" href="{{ '/weekly/' | relative_url }}">快报</a>
+  <a class="home-switcher__button{% if current_mode == 'digest' %} is-active{% endif %}" href="{{ '/digest/' | relative_url }}">手选</a>
+  <a class="home-switcher__button{% if current_mode == 'weekly' %} is-active{% endif %}" href="{{ '/weekly/' | relative_url }}">快报</a>
 </div>
