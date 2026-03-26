@@ -12,15 +12,13 @@ layout: default
   {%- include home-switcher.html active=home_mode -%}
 
   {%- if home_mode == 'digest' -%}
-      {%- assign digest_count = 0 -%}
+      {%- assign digest_posts = site.posts
+        | where_exp: "post", "post.categories contains '手选' or post.categories contains 'digest'"
+        | sort: "date"
+        | reverse -%}
+      {%- assign digest_count = digest_posts | size -%}
       <ul class="post-list">
-      {%- for post in site.posts -%}
-        {%- assign is_digest_post = false -%}
-        {%- if post.categories contains '手选' or post.categories contains 'digest' -%}
-          {%- assign is_digest_post = true -%}
-        {%- endif -%}
-        {%- if is_digest_post and digest_count < 10 -%}
-          {%- assign digest_count = digest_count | plus: 1 -%}
+      {%- for post in digest_posts limit: 10 -%}
           <li>
             {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
             <span class="post-meta">{{ post.date | date: date_format }}</span>
@@ -29,7 +27,6 @@ layout: default
             </h3>
             <div class="post-content e-content">{{ post.content }}</div>
           </li>
-        {%- endif -%}
       {%- endfor -%}
     </ul>
 
@@ -37,26 +34,23 @@ layout: default
       <p>暂无 digest 内容。</p>
     {%- endif -%}
   {%- else -%}
-      {%- assign weekly_count = 0 -%}
+      {%- assign weekly_posts = site.posts
+        | where_exp: "post", "not (post.categories contains '手选' or post.categories contains 'digest')"
+        | sort: "date"
+        | reverse -%}
+      {%- assign weekly_count = weekly_posts | size -%}
       <ul class="post-list">
-      {%- for post in site.posts -%}
-        {%- assign is_digest_post = false -%}
-        {%- if post.categories contains '手选' or post.categories contains 'digest' -%}
-          {%- assign is_digest_post = true -%}
-        {%- endif -%}
-        {%- unless is_digest_post -%}
-          {%- assign weekly_count = weekly_count | plus: 1 -%}
+      {%- for post in weekly_posts -%}
           <li>
             {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
             <span class="post-meta">{{ post.date | date: date_format }}</span>
             <h3>
               <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
             </h3>
-            {%- if weekly_count <= 2 -%}
+            {%- if forloop.index <= 2 -%}
               <div class="post-content e-content">{{ post.content }}</div>
             {%- endif -%}
           </li>
-        {%- endunless -%}
       {%- endfor -%}
     </ul>
 
