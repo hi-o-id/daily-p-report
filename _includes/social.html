@@ -1,0 +1,10 @@
+{%- assign social_links = site.minima.social_links | default: site.social_links -%}
+{%- if social_links and social_links.size > 0 -%}
+  <ul class="social-media-list">
+    {%- for entry in social_links -%}
+      {%- assign service = entry[0] -%}
+      {%- assign profile = entry[1] -%}
+      <li><a href="{{ profile | escape }}">{{ service | escape }}</a></li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

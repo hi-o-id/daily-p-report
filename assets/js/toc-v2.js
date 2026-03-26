@@ -78,7 +78,7 @@
     var tab = document.createElement('button');
     tab.type = 'button';
     tab.className = 'quick-toc-tab';
-    tab.textContent = '专利条目';
+    tab.textContent = document.body.getAttribute('data-toc-title') || '页面目录';
     tab.setAttribute('aria-expanded', 'true');
     shell.appendChild(tab);
 
@@ -166,12 +166,12 @@
       if (activeMid < tocTop || activeMid > tocBottom) {
         // Off-screen above → scroll so it lands ~3rd from top
         if (activeMid < tocTop) {
-          var target = Math.max(0, activeGlobalIndex - EDGE);
+          let target = Math.max(0, activeGlobalIndex - EDGE);
           toc.scrollTo({ top: linkScrollPos(links[target]), behavior: 'smooth' });
         } else {
           // Off-screen below → scroll so it lands ~3rd from bottom
-          var target = Math.min(links.length - 1, activeGlobalIndex + EDGE);
-          var pos = linkScrollPos(links[target]) + links[target].getBoundingClientRect().height - toc.clientHeight;
+          let target = Math.min(links.length - 1, activeGlobalIndex + EDGE);
+          let pos = linkScrollPos(links[target]) + links[target].getBoundingClientRect().height - toc.clientHeight;
           toc.scrollTo({ top: Math.max(0, pos), behavior: 'smooth' });
         }
         return;
@@ -195,7 +195,7 @@
       // → scroll down so the item below becomes visible
       if (activeVisibleIndex >= totalVisible - EDGE && activeGlobalIndex < links.length - 1) {
         var showUntil = Math.min(links.length - 1, activeGlobalIndex + 1);
-        var pos = linkScrollPos(links[showUntil]) + links[showUntil].getBoundingClientRect().height - toc.clientHeight;
+        let pos = linkScrollPos(links[showUntil]) + links[showUntil].getBoundingClientRect().height - toc.clientHeight;
         toc.scrollTo({ top: Math.max(0, pos), behavior: 'smooth' });
         return;
       }

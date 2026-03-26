@@ -26,7 +26,7 @@ layout: default
     {%- endfor -%}
   </ul>
 
-  {%- if page.posts == empty -%}
+  {%- if page.posts.size == 0 -%}
     <p>暂无归档内容。</p>
   {%- endif -%}
 </div>

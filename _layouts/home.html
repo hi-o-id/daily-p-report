@@ -12,9 +12,7 @@ layout: default
   {%- include home-switcher.html -%}
 
   {%- if home_mode == 'digest' -%}
-      {%- assign digest_posts_a = site.posts | where_exp: "post", "post.categories contains '手选'" -%}
-      {%- assign digest_posts_b = site.posts | where_exp: "post", "post.categories contains 'digest'" -%}
-      {%- assign digest_posts = digest_posts_a | concat: digest_posts_b | uniq | sort: "date" | reverse -%}
+      {%- assign digest_posts = site.posts | where_exp: "post", "post.categories contains 'digest'" | sort: "date" | reverse -%}
       {%- assign digest_count = digest_posts | size -%}
       <ul class="post-list">
       {%- for post in digest_posts limit: 10 -%}
@@ -36,15 +34,16 @@ layout: default
       {%- assign all_posts = site.posts | sort: "date" | reverse -%}
       {%- assign weekly_posts = "" | split: "" -%}
       {%- for post in all_posts -%}
-        {%- unless post.categories contains '手选' or post.categories contains 'digest' -%}
+        {%- unless post.categories contains 'digest' -%}
           {%- assign weekly_posts = weekly_posts | push: post -%}
         {%- endunless -%}
       {%- endfor -%}
       {%- assign weekly_count = weekly_posts | size -%}
       <ul class="post-list">
-      {%- for post in weekly_posts -%}
+      {%- assign date_format = site.minima.date_format | default: "%Y-%m-%d" -%}
+      {%- for post in weekly_posts limit: site.weekly_posts_limit | default: 20 -%}
           <li>
-            <span class="post-meta">{{ post.date | date: "%Y-%m-%d" }}</span>
+            <span class="post-meta">{{ post.date | date: date_format }}</span>
             <h3>
               <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
             </h3>

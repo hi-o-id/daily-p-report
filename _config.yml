@@ -16,6 +16,7 @@ markdown: kramdown
 theme: minima
 plugins:
   - jekyll-feed
+  - jekyll-seo-tag
   - jekyll-archives  # 归档插件
 
 # 归档插件配置
@@ -37,7 +38,7 @@ defaults:
       type: "posts"
     values:
       layout: post
-      author: ""
+      author: []
 
 # 排除文件
 exclude:
@@ -51,3 +52,11 @@ exclude:
   - vendor/cache/
   - vendor/gems/
   - vendor/ruby/
+
+minima:
+  date_format: "%Y-%m-%d"
+
+weekly_posts_limit: 20
+
+author:
+  name: "hiid"

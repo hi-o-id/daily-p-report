@@ -62,7 +62,7 @@ html {
 }
 
 .quick-toc-shell.is-collapsed {
-  width: 260px;
+  width: 56px;
 }
 
 .quick-toc-shell.is-collapsed .quick-toc {
@@ -97,7 +97,7 @@ html {
   color: #111;
 }
 .quick-toc__link:visited {
-     color: #553798;
+  color: #553798;
 }
 .quick-toc__link.is-active {
   color: #111;
@@ -139,4 +139,115 @@ html {
   border-color: #2a7ae2;
   background: #2a7ae2;
   color: #fff;
+}
+
+
+.home-switcher__button.is-active:visited {
+  color: #fff;
+}
+
+.force-inline {
+  display: inline;
+}
+
+.post-tags {
+  margin: 12px 0 8px;
+  font-size: 0.95rem;
+}
+
+.post-tag {
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.site-subtitle {
+  margin-left: 20px;
+  line-height: 54px;
+}
+
+.site-subtitle__link {
+  color: inherit;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.archives-index {
+  max-width: 800px;
+}
+
+.archive-year,
+.archive-categories {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.archive-year h2,
+.archive-categories h2 {
+  margin-top: 0;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.5rem;
+  font-size: 1.2em;
+}
+
+.archive-year h2 a,
+.archive-months a,
+.category-list a {
+  text-decoration: none;
+  color: #333;
+}
+
+.archive-months a:hover,
+.category-list a:hover {
+  text-decoration: underline;
+}
+
+.post-count {
+  font-size: 0.8em;
+  color: #6c757d;
+  font-weight: normal;
+  margin-left: 0.5rem;
+}
+
+.archive-months,
+.category-list,
+.archive-posts {
+  list-style: none;
+  padding-left: 0;
+}
+
+.archive-months,
+.category-list {
+  margin: 0;
+}
+
+.archive-months li,
+.category-list li {
+  margin: 0.5rem 2rem 0.5rem 0;
+  display: inline-block;
+}
+
+.archive-posts {
+  margin: 0.8rem 0 0;
+}
+
+.archive-posts li {
+  margin: 0.4rem 0;
+}
+
+.archive-posts time {
+  color: #6c757d;
+  margin-right: 0.5rem;
+  font-size: 0.9em;
 }
