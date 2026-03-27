@@ -14,8 +14,8 @@ layout: default
   {%- if home_mode == 'digest' -%}
       {%- assign digest_posts = site.posts | where_exp: "post", "post.categories contains 'digest'" | sort: "date" | reverse -%}
       {%- assign digest_count = digest_posts | size -%}
-      <ul class="post-list">
-      {%- for post in digest_posts limit: 10 -%}
+      <ul class="post-list js-paginated-list" data-page-size="10">
+      {%- for post in digest_posts -%}
           <li>
             {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
             <span class="post-meta">{{ post.date | date: date_format }}</span>
@@ -39,9 +39,9 @@ layout: default
         {%- endunless -%}
       {%- endfor -%}
       {%- assign weekly_count = weekly_posts | size -%}
-      <ul class="post-list">
+      <ul class="post-list js-paginated-list" data-page-size="10">
       {%- assign date_format = site.minima.date_format | default: "%Y-%m-%d" -%}
-      {%- for post in weekly_posts limit: site.weekly_posts_limit | default: 20 -%}
+      {%- for post in weekly_posts -%}
           <li>
             <span class="post-meta">{{ post.date | date: date_format }}</span>
             <h3>
@@ -58,4 +58,98 @@ layout: default
       <p>暂无快报内容。</p>
     {%- endif -%}
   {%- endif -%}
+
+  <nav class="home-pagination" aria-label="页面分页"></nav>
 </div>
+
+<script>
+  (function () {
+    var list = document.querySelector(".js-paginated-list");
+    var nav = document.querySelector(".home-pagination");
+    if (!list || !nav) return;
+
+    var items = Array.prototype.slice.call(list.querySelectorAll("li"));
+    var pageSize = parseInt(list.getAttribute("data-page-size") || "10", 10);
+    var totalPages = Math.ceil(items.length / pageSize);
+    if (totalPages <= 1) {
+      nav.innerHTML = "";
+      return;
+    }
+
+    var currentPage = 1;
+    var params = new URLSearchParams(window.location.search);
+    var requestedPage = parseInt(params.get("page") || "1", 10);
+    if (!Number.isNaN(requestedPage) && requestedPage >= 1 && requestedPage <= totalPages) {
+      currentPage = requestedPage;
+    }
+
+    function setPage(page) {
+      currentPage = page;
+      var start = (page - 1) * pageSize;
+      var end = start + pageSize;
+      items.forEach(function (item, index) {
+        item.style.display = index >= start && index < end ? "" : "none";
+      });
+      renderPagination();
+      updateUrl(page);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function buildPages() {
+      var pages = [1];
+      if (currentPage > 3) pages.push("…");
+      var rangeStart = Math.max(2, currentPage - 1);
+      var rangeEnd = Math.min(totalPages - 1, currentPage + 1);
+      for (var i = rangeStart; i <= rangeEnd; i++) pages.push(i);
+      if (currentPage < totalPages - 2) pages.push("…");
+      if (totalPages > 1) pages.push(totalPages);
+      return pages.filter(function (value, index, self) {
+        return self.indexOf(value) === index || value === "…";
+      });
+    }
+
+    function makeButton(label, targetPage, disabled, active) {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "home-pagination__button" + (active ? " is-active" : "");
+      button.textContent = label;
+      if (disabled) {
+        button.disabled = true;
+      } else {
+        button.addEventListener("click", function () {
+          setPage(targetPage);
+        });
+      }
+      return button;
+    }
+
+    function renderPagination() {
+      nav.innerHTML = "";
+      nav.appendChild(makeButton("上一页", currentPage - 1, currentPage === 1, false));
+
+      buildPages().forEach(function (token) {
+        if (token === "…") {
+          var ellipsis = document.createElement("span");
+          ellipsis.className = "home-pagination__ellipsis";
+          ellipsis.textContent = "…";
+          nav.appendChild(ellipsis);
+          return;
+        }
+        nav.appendChild(makeButton(String(token), token, false, token === currentPage));
+      });
+
+      nav.appendChild(makeButton("下一页", currentPage + 1, currentPage === totalPages, false));
+    }
+
+    function updateUrl(page) {
+      var newParams = new URLSearchParams(window.location.search);
+      if (page <= 1) newParams.delete("page");
+      else newParams.set("page", String(page));
+      var newQuery = newParams.toString();
+      var newUrl = window.location.pathname + (newQuery ? "?" + newQuery : "") + window.location.hash;
+      window.history.replaceState({}, "", newUrl);
+    }
+
+    setPage(currentPage);
+  })();
+</script>
