@@ -14,7 +14,7 @@ layout: default
   {%- if home_mode == 'digest' -%}
       {%- assign digest_posts = site.posts | where_exp: "post", "post.categories contains 'digest'" | sort: "date" | reverse -%}
       {%- assign digest_count = digest_posts | size -%}
-      <ul class="post-list js-paginated-list" data-page-size="10" data-mode="digest">
+      <ul class="post-list js-paginated-list" data-page-size="10">
       {%- for post in digest_posts -%}
           <li>
             {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
@@ -29,6 +29,8 @@ layout: default
 
       {%- if digest_count == 0 -%}
       <p>暂无 digest 内容。</p>
+    {%- elsif digest_count > 10 -%}
+      <nav class="home-pagination js-digest-pagination" aria-label="Digest 分页"></nav>
     {%- endif -%}
 
     <nav class="home-pagination js-pagination-nav" aria-label="Digest 分页"></nav>
@@ -42,10 +44,10 @@ layout: default
         {%- endunless -%}
       {%- endfor -%}
       {%- assign weekly_count = weekly_posts | size -%}
-      <ul class="post-list js-paginated-list" data-page-size="10" data-mode="weekly">
+      <ul class="post-list js-paginated-list" data-page-size="10">
       {%- assign date_format = site.minima.date_format | default: "%Y-%m-%d" -%}
       {%- for post in weekly_posts -%}
-          <li data-index="{{ forloop.index }}">
+          <li>
             <span class="post-meta">{{ post.date | date: date_format }}</span>
             <h3>
               <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
@@ -59,24 +61,26 @@ layout: default
 
     {%- if weekly_count == 0 -%}
       <p>暂无快报内容。</p>
+    {%- elsif weekly_count > 10 -%}
+      <nav class="home-pagination js-weekly-pagination" aria-label="Weekly 分页"></nav>
     {%- endif -%}
 
     <nav class="home-pagination js-pagination-nav" aria-label="Weekly 分页"></nav>
 
   {%- endif -%}
+
+  <nav class="home-pagination" aria-label="页面分页"></nav>
 </div>
 
 <script>
   (function () {
     var list = document.querySelector(".js-paginated-list");
-    var nav = document.querySelector(".js-pagination-nav");
+    var nav = document.querySelector(".home-pagination");
     if (!list || !nav) return;
 
-    var items = Array.prototype.slice.call(list.querySelectorAll(":scope > li"));
+    var items = Array.prototype.slice.call(list.querySelectorAll("li"));
     var pageSize = parseInt(list.getAttribute("data-page-size") || "10", 10);
-    var mode = list.getAttribute("data-mode") || "digest";
     var totalPages = Math.ceil(items.length / pageSize);
-
     if (totalPages <= 1) {
       nav.innerHTML = "";
       return;
@@ -93,22 +97,9 @@ layout: default
       currentPage = page;
       var start = (page - 1) * pageSize;
       var end = start + pageSize;
-
       items.forEach(function (item, index) {
-        var visible = index >= start && index < end;
-        item.style.display = visible ? "" : "none";
-
-        // Weekly 模式：第一页前 2 条展开内容，其余所有条目只显示 Title
-        if (mode === "weekly") {
-          var contentDiv = item.querySelector(".post-content.e-content");
-          if (contentDiv) {
-            // 只有第一页（page===1）且在页内前 2 条（index 0, 1）时展开
-            var shouldExpand = (page === 1 && index < 2);
-            contentDiv.style.display = shouldExpand ? "" : "none";
-          }
-        }
+        item.style.display = index >= start && index < end ? "" : "none";
       });
-
       renderPagination();
       updateUrl(page);
       window.scrollTo({ top: 0, behavior: "smooth" });
