@@ -14,7 +14,7 @@ layout: default
   {%- if home_mode == 'digest' -%}
       {%- assign digest_posts = site.posts | where_exp: "post", "post.categories contains 'digest'" | sort: "date" | reverse -%}
       {%- assign digest_count = digest_posts | size -%}
-      <ul class="post-list js-digest-list" data-page-size="10">
+      <ul class="post-list js-paginated-list" data-page-size="10">
       {%- for post in digest_posts -%}
           <li>
             {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
@@ -41,7 +41,7 @@ layout: default
         {%- endunless -%}
       {%- endfor -%}
       {%- assign weekly_count = weekly_posts | size -%}
-      <ul class="post-list js-weekly-list" data-page-size="10">
+      <ul class="post-list js-paginated-list" data-page-size="10">
       {%- assign date_format = site.minima.date_format | default: "%Y-%m-%d" -%}
       {%- for post in weekly_posts -%}
           <li>
@@ -62,11 +62,44 @@ layout: default
       <nav class="home-pagination js-weekly-pagination" aria-label="Weekly 分页"></nav>
     {%- endif -%}
   {%- endif -%}
+
+  <nav class="home-pagination" aria-label="页面分页"></nav>
 </div>
 
 <script>
   (function () {
-    function buildPages(currentPage, totalPages) {
+    var list = document.querySelector(".js-paginated-list");
+    var nav = document.querySelector(".home-pagination");
+    if (!list || !nav) return;
+
+    var items = Array.prototype.slice.call(list.querySelectorAll("li"));
+    var pageSize = parseInt(list.getAttribute("data-page-size") || "10", 10);
+    var totalPages = Math.ceil(items.length / pageSize);
+    if (totalPages <= 1) {
+      nav.innerHTML = "";
+      return;
+    }
+
+    var currentPage = 1;
+    var params = new URLSearchParams(window.location.search);
+    var requestedPage = parseInt(params.get("page") || "1", 10);
+    if (!Number.isNaN(requestedPage) && requestedPage >= 1 && requestedPage <= totalPages) {
+      currentPage = requestedPage;
+    }
+
+    function setPage(page) {
+      currentPage = page;
+      var start = (page - 1) * pageSize;
+      var end = start + pageSize;
+      items.forEach(function (item, index) {
+        item.style.display = index >= start && index < end ? "" : "none";
+      });
+      renderPagination();
+      updateUrl(page);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function buildPages() {
       var pages = [1];
       if (currentPage > 3) pages.push("…");
       var rangeStart = Math.max(2, currentPage - 1);
@@ -79,7 +112,7 @@ layout: default
       });
     }
 
-    function makeButton(label, targetPage, disabled, active, onClick) {
+    function makeButton(label, targetPage, disabled, active) {
       var button = document.createElement("button");
       button.type = "button";
       button.className = "home-pagination__button" + (active ? " is-active" : "");
@@ -87,16 +120,18 @@ layout: default
       if (disabled) {
         button.disabled = true;
       } else {
-        button.addEventListener("click", onClick.bind(null, targetPage));
+        button.addEventListener("click", function () {
+          setPage(targetPage);
+        });
       }
       return button;
     }
 
-    function renderPagination(nav, currentPage, totalPages, onPageChange) {
+    function renderPagination() {
       nav.innerHTML = "";
-      nav.appendChild(makeButton("上一页", currentPage - 1, currentPage === 1, false, onPageChange));
+      nav.appendChild(makeButton("上一页", currentPage - 1, currentPage === 1, false));
 
-      buildPages(currentPage, totalPages).forEach(function (token) {
+      buildPages().forEach(function (token) {
         if (token === "…") {
           var ellipsis = document.createElement("span");
           ellipsis.className = "home-pagination__ellipsis";
@@ -104,10 +139,10 @@ layout: default
           nav.appendChild(ellipsis);
           return;
         }
-        nav.appendChild(makeButton(String(token), token, false, token === currentPage, onPageChange));
+        nav.appendChild(makeButton(String(token), token, false, token === currentPage));
       });
 
-      nav.appendChild(makeButton("下一页", currentPage + 1, currentPage === totalPages, false, onPageChange));
+      nav.appendChild(makeButton("下一页", currentPage + 1, currentPage === totalPages, false));
     }
 
     function updateUrl(page) {
@@ -119,44 +154,6 @@ layout: default
       window.history.replaceState({}, "", newUrl);
     }
 
-    function initPagination(listSelector, navSelector) {
-      var list = document.querySelector(listSelector);
-      var nav = document.querySelector(navSelector);
-      if (!list || !nav) return;
-
-      var items = Array.prototype.filter.call(list.children, function (node) {
-        return node.tagName === "LI";
-      });
-      var pageSize = parseInt(list.getAttribute("data-page-size") || "10", 10);
-      var totalPages = Math.ceil(items.length / pageSize);
-      if (totalPages <= 1) {
-        nav.innerHTML = "";
-        return;
-      }
-
-      var currentPage = 1;
-      var params = new URLSearchParams(window.location.search);
-      var requestedPage = parseInt(params.get("page") || "1", 10);
-      if (!Number.isNaN(requestedPage) && requestedPage >= 1 && requestedPage <= totalPages) {
-        currentPage = requestedPage;
-      }
-
-      function setPage(page) {
-        currentPage = page;
-        var start = (page - 1) * pageSize;
-        var end = start + pageSize;
-        items.forEach(function (item, index) {
-          item.style.display = index >= start && index < end ? "" : "none";
-        });
-        renderPagination(nav, currentPage, totalPages, setPage);
-        updateUrl(page);
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-
-      setPage(currentPage);
-    }
-
-    initPagination(".js-digest-list", ".js-digest-pagination");
-    initPagination(".js-weekly-list", ".js-weekly-pagination");
+    setPage(currentPage);
   })();
 </script>
